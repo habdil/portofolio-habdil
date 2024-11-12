@@ -7,10 +7,106 @@ import Works from '../components/sections/Works.astro';
 ---
 
 <Layout title="Habdil - Personal Portfolio">
- <main>
-   <Hero />
-   <Experience />
-   <Journey />
-   <Works />
- </main>
+  <main class="relative">
+    <!-- Preload essential sections -->
+    <div class="min-h-screen">
+      <Hero />
+    </div>
+    
+    <!-- Lazy load other sections -->
+    <div class="relative">
+      <Experience />
+      <Journey />
+      <Works />
+    </div>
+  </main>
 </Layout>
+
+<script>
+// Function to check if element is in viewport
+function isInViewport(element: Element) {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.bottom >= 0
+  );
+}
+
+// Initialize sections visibility
+document.addEventListener('astro:page-load', () => {
+  const sections = document.querySelectorAll('section');
+  let observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('section-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '50px'
+  });
+
+  sections.forEach(section => {
+    if (!isInViewport(section)) {
+      observer.observe(section);
+    } else {
+      section.classList.add('section-visible');
+    }
+  });
+});
+
+// Handle view transitions
+document.addEventListener('astro:after-swap', () => {
+  const sections = document.querySelectorAll('section');
+  sections.forEach(section => {
+    if (isInViewport(section)) {
+      section.classList.add('section-visible');
+    }
+  });
+});
+
+// Optimize scroll performance
+let scrollTimeout: number;
+window.addEventListener('scroll', () => {
+  if (scrollTimeout) {
+    window.cancelAnimationFrame(scrollTimeout);
+  }
+  
+  scrollTimeout = window.requestAnimationFrame(() => {
+    const sections = document.querySelectorAll('section:not(.section-visible)');
+    sections.forEach(section => {
+      if (isInViewport(section)) {
+        section.classList.add('section-visible');
+      }
+    });
+  });
+}, { passive: true });
+</script>
+
+<style is:global>
+  section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+  section.section-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Ensure first section (Hero) is always visible */
+  section:first-of-type {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Optimize transitions */
+  @media (prefers-reduced-motion: reduce) {
+    section {
+      transition: opacity 0.1s ease-out;
+      transform: none;
+    }
+  }
+</style>

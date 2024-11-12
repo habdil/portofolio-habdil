@@ -42,7 +42,7 @@ const currentPath = Astro.url.pathname;
         ))}
       </div>
 
-      <!-- Improved Mobile Menu Button -->
+      <!-- Mobile Menu Button -->
       <button 
         id="menuButton"
         class="md:hidden relative z-50 w-8 h-8 flex items-center justify-center"
@@ -50,17 +50,17 @@ const currentPath = Astro.url.pathname;
         aria-expanded="false"
       >
         <div class="relative w-6 h-6">
-          <span class="absolute top-0 left-0 w-6 h-0.5 bg-blue-dark transform transition-all duration-300 rotate-0"></span>
-          <span class="absolute top-[10px] left-0 w-6 h-0.5 bg-blue-dark transform transition-all duration-300"></span>
-          <span class="absolute top-[20px] left-0 w-6 h-0.5 bg-blue-dark transform transition-all duration-300 rotate-0"></span>
+          <span class="absolute top-0 left-0 w-6 h-0.5 bg-blue-dark transition-transform duration-300"></span>
+          <span class="absolute top-[10px] left-0 w-6 h-0.5 bg-blue-dark transition-opacity duration-300"></span>
+          <span class="absolute top-[20px] left-0 w-6 h-0.5 bg-blue-dark transition-transform duration-300"></span>
         </div>
       </button>
     </div>
 
-    <!-- Improved Mobile Navigation Menu -->
+    <!-- Mobile Navigation Menu -->
     <div 
       id="mobileMenu"
-      class="fixed inset-0 bg-white/95 backdrop-blur-sm transform translate-x-full transition-transform duration-500 ease-in-out md:hidden z-40"
+      class="fixed inset-0 bg-white/95 backdrop-blur-sm transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-40"
       aria-hidden="true"
     >
       <div class="flex flex-col h-full justify-center items-center p-6">
@@ -68,6 +68,7 @@ const currentPath = Astro.url.pathname;
           {navLinks.map(link => (
             <a 
               href={link.href}
+              data-nav-link
               class={`text-xl font-medium py-3 px-6 rounded-lg transition-all duration-300
                      transform hover:scale-105
                      ${currentPath === link.href ? 
@@ -84,104 +85,109 @@ const currentPath = Astro.url.pathname;
   </nav>
 </header>
 
-<style>
-/* Improved Hamburger Menu Animation */
-.menu-open span:first-child {
-  top: 10px !important;
-  transform: rotate(45deg) !important;
-}
-
-.menu-open span:nth-child(2) {
-  opacity: 0 !important;
-  transform: translateX(100%) !important;
-}
-
-.menu-open span:last-child {
-  top: 10px !important;
-  transform: rotate(-45deg) !important;
-}
-
-/* Mobile Menu Animation */
-.mobile-menu-show {
-  transform: translateX(0) !important;
-}
-
-/* Prevent scrolling when menu is open */
-.menu-open-body {
-  overflow: hidden;
-}
-</style>
-
 <script>
-  // Type declaration for timers
-  let resizeTimer: number | undefined;
-  let scrollTimer: number | undefined;
-  
+// State management for mobile menu
+let isMenuOpen = false;
+
+// Initialize mobile menu functionality
+function initializeMobileMenu() {
   const menuButton = document.getElementById('menuButton');
   const mobileMenu = document.getElementById('mobileMenu');
-  const body = document.body;
-  let isMenuOpen = false;
+  
+  if (!menuButton || !mobileMenu) return;
+  
+  // Reset state
+  isMenuOpen = false;
+  menuButton.classList.remove('menu-open');
+  mobileMenu.classList.remove('mobile-menu-show');
+  document.body.classList.remove('menu-open-body');
   
   function toggleMenu() {
+    if (!menuButton || !mobileMenu) return;
+    
     isMenuOpen = !isMenuOpen;
-    menuButton?.classList.toggle('menu-open');
-    mobileMenu?.classList.toggle('mobile-menu-show');
-    body.classList.toggle('menu-open-body');
-    menuButton?.setAttribute('aria-expanded', isMenuOpen.toString());
-    mobileMenu?.setAttribute('aria-hidden', (!isMenuOpen).toString());
+    menuButton.classList.toggle('menu-open');
+    mobileMenu.classList.toggle('mobile-menu-show');
+    document.body.classList.toggle('menu-open-body');
+    menuButton.setAttribute('aria-expanded', String(isMenuOpen));
+    mobileMenu.setAttribute('aria-hidden', String(!isMenuOpen));
   }
-  
-  // Toggle menu
-  menuButton?.addEventListener('click', (e) => {
+
+  // Menu button click handler
+  menuButton.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleMenu();
   });
-  
-  // Close menu when pressing Escape key
+
+  // Close menu on navigation link click
+  const navLinks = mobileMenu.querySelectorAll('[data-nav-link]');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMenuOpen) toggleMenu();
+    });
+  });
+
+  // Close menu on outside click
+  document.addEventListener('click', (e) => {
+    if (isMenuOpen && !mobileMenu.contains(e.target as Node) && e.target !== menuButton) {
+      toggleMenu();
+    }
+  });
+
+  // Close menu on escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isMenuOpen) {
       toggleMenu();
     }
   });
-  
-  // Close on link click
-  const mobileLinks = mobileMenu?.querySelectorAll('a');
-  mobileLinks?.forEach(link => {
-    link.addEventListener('click', () => {
-      if (isMenuOpen) toggleMenu();
-    });
-  });
-  
-  // Handle resize with proper timer type
+
+  // Handle resize
   window.addEventListener('resize', () => {
-    if (resizeTimer !== undefined) {
-      clearTimeout(resizeTimer);
+    if (window.innerWidth >= 768 && isMenuOpen) {
+      toggleMenu();
     }
-    resizeTimer = window.setTimeout(() => {
-      if (window.innerWidth >= 768 && isMenuOpen) {
-        toggleMenu();
-      }
-    }, 250);
   });
-  
-  // Improved scroll handling with proper timer type
-  let prevScroll = window.pageYOffset;
-  const header = document.querySelector('header');
-  
-  window.addEventListener('scroll', () => {
-    if (isMenuOpen) return;
-  
-    if (scrollTimer !== undefined) {
-      clearTimeout(scrollTimer);
-    }
-    scrollTimer = window.setTimeout(() => {
-      const currentScroll = window.pageYOffset;
-      if (currentScroll > prevScroll && currentScroll > 100) {
-        header?.classList.add('-translate-y-full');
-      } else {
-        header?.classList.remove('-translate-y-full');
-      }
-      prevScroll = currentScroll;
-    }, 100);
-  });
-  </script>
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initializeMobileMenu);
+
+// Re-initialize after Astro view transitions
+document.addEventListener('astro:page-load', initializeMobileMenu);
+document.addEventListener('astro:after-swap', initializeMobileMenu);
+
+// Handle cleanup between page transitions
+document.addEventListener('astro:before-swap', () => {
+  document.body.classList.remove('menu-open-body');
+});
+</script>
+
+<style>
+.menu-open span:first-child {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.menu-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-open span:last-child {
+  transform: translateY(-10px) rotate(-45deg);
+}
+
+.mobile-menu-show {
+  transform: translateX(0) !important;
+}
+
+.menu-open-body {
+  overflow: hidden;
+  touch-action: none;
+}
+
+@media (min-width: 768px) {
+  .menu-open-body {
+    overflow: auto;
+    touch-action: auto;
+  }
+}
+</style>
