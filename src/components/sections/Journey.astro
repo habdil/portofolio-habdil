@@ -1,0 +1,90 @@
+---
+const journeyItems = [
+ {
+   title: "IT Centrum UII, Yogyakarta",
+   role: "Laboratory Assistant",
+   period: "Okt 2024 - Present",
+   description: "A programming logic expert who guides and mentors students in developing strong programming foundations. Responsible for conducting lab sessions, creating teaching materials, and evaluating student performance in programming concepts and problem-solving techniques.",
+   dotColor: "bg-teal"
+ },
+ {
+   title: "Academic Staff, GDGoC UII",
+   role: "Staff",
+   period: "Nov 2024 - Present",
+   description: "Supporting students in mastering informatics fundamentals through comprehensive guidance and mentoring. Creating and reviewing course materials, facilitating discussion sessions, and helping students understand complex programming concepts and theories.",
+   dotColor: "bg-salmon"
+ },
+ {
+   title: "UII Excellence Scholarship",
+   role: "Scholar",
+   period: "Okt 2024 - Present",
+   description: "Selected as an outstanding student for the UII Excellence Scholarship Program, maintaining a 3.94/4.00 GPA while actively participating in academic and leadership development programs. Engaging in research projects and competitive programming challenges.",
+   dotColor: "bg-gold"
+ },
+ {
+   title: "Preliminary Data Science Competition",
+   role: "Team Leader",
+   period: "Okt 2024 - Present",
+   description: "Led the development of 'CrimeInsight Prediction' project, implementing machine learning solutions for urban safety analysis. Successfully integrated predictive modeling with interactive data visualization for crime trend analysis in DKI Jakarta.",
+   dotColor: "bg-red"
+ }
+];
+---
+
+<section class="py-20" id="journey">
+ <div class="container mx-auto px-6">
+   <div class="max-w-5xl mx-auto">
+     <!-- Section Title -->
+     <h2 class="text-3xl md:text-4xl font-bold text-blue-dark mb-16 text-center">
+       My Journey
+     </h2>
+
+     <!-- Timeline -->
+     <div class="relative">
+       <!-- Vertical Line -->
+       <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gray-lighter"></div>
+
+       <!-- Journey Items -->
+       <div class="space-y-16">
+         {journeyItems.map((item, index) => (
+           <div 
+             class="relative flex items-start"
+             data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
+             data-aos-duration="1000"
+           >
+             <!-- Left Content (Title & Period) -->
+             <div class="w-1/2 pr-12 text-right">
+               <h3 class="text-xl font-semibold text-blue-dark mb-1">
+                 {item.title}
+               </h3>
+               <div class="text-sm text-blue-medium mb-1">
+                 {item.period} • <span class="font-medium">{item.role}</span>
+               </div>
+             </div>
+
+             <!-- Timeline Dot -->
+             <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1">
+               <div class={`w-4 h-4 rounded-full ${item.dotColor} ring-4 ring-white`}></div>
+             </div>
+
+             <!-- Right Content (Description) -->
+             <div class="w-1/2 pl-12">
+               <p class="text-blue-medium/80 leading-relaxed">
+                 {item.description}
+               </p>
+             </div>
+           </div>
+         ))}
+       </div>
+     </div>
+   </div>
+ </div>
+</section>
+
+<style>
+ /* Optional: Add hover effect to timeline items */
+ .journey-item:hover .timeline-dot {
+   transform: scale(1.2);
+   transition: transform 0.3s ease;
+ }
+</style>

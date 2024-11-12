@@ -1,0 +1,59 @@
+---
+// src/components/sections/Experience.astro
+
+// Gunakan path relatif dari public folder
+const experiences = [
+ {
+   icon: '/assets/icons/web.png',
+   title: "Web Developer",
+   description: "I transform complex challenges into elegant digital solutions."
+ },
+ {
+   icon: '/assets/icons/uiux.png',
+   title: "UI/UX Design",
+   description: "Specializing in web development and data science, I create innovative applications that solve real-world problems and drive meaningful impact."
+ }
+];
+---
+
+<section class="py-20" id="experience">
+ <div class="container mx-auto px-6">
+   <div class="max-w-4xl">
+     <!-- Section Title -->
+     <h2 class="text-3xl md:text-4xl font-bold text-blue-dark mb-12">
+       What Can I Help You With?
+     </h2>
+
+     <!-- Experience Cards -->
+     <div class="space-y-6">
+       {experiences.map((exp) => (
+         <div 
+           class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+           data-aos="fade-up"
+         >
+           <div class="flex items-start gap-6">
+             <!-- Icon -->
+             <div class="w-12 h-12 rounded-xl bg-blue-light/5 p-2 flex items-center justify-center">
+               <img 
+                 src={exp.icon} 
+                 alt={exp.title}
+                 class="w-8 h-8 object-contain"
+               />
+             </div>
+             
+             <!-- Content -->
+             <div class="flex-1">
+               <h3 class="text-xl font-semibold text-blue-dark mb-2">
+                 {exp.title}
+               </h3>
+               <p class="text-blue-medium/80 leading-relaxed">
+                 {exp.description}
+               </p>
+             </div>
+           </div>
+         </div>
+       ))}
+     </div>
+   </div>
+ </div>
+</section>

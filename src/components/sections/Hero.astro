@@ -1,0 +1,125 @@
+---
+// src/components/sections/Hero.astro
+
+// Update import paths
+const profileImgUrl = '/assets/images/profile.png';
+const jsIconUrl = '/assets/icons/javascript.svg';
+const pythonIconUrl = '/assets/icons/python.svg';
+const uiuxIconUrl = '/assets/icons/uiux.svg';
+const javaIconUrl = '/assets/icons/java.svg';
+const securityIconUrl = '/assets/icons/security.svg';
+const students = '/assets/icons/students.svg';
+
+// Update tech icons data
+const techIcons = [
+ { src: jsIconUrl, alt: "JavaScript", class: "top-10 right-40 animate-float-1" },      // Lebih ke atas
+ { src: pythonIconUrl, alt: "Python", class: "top-48 right-16 animate-float-2" },      // Lebih ke kanan
+ { src: uiuxIconUrl, alt: "UI/UX", class: "top-4 right-80 animate-float-3" },          // Lebih ke kiri atas
+ { src: javaIconUrl, alt: "Java", class: "top-60 right-90 animate-float-4" },          // Lebih ke bawah
+ { src: securityIconUrl, alt: "Security", class: "top-32 right-90 animate-float-5" },    // Lebih ke kanan tengah
+];
+---
+
+<section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+  <!-- Background decoration -->
+  <div class="absolute inset-0 -z-10 bg-gray-light">
+    <div class="absolute top-40 right-20 w-96 h-96 bg-blue-light/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 left-20 w-96 h-96 bg-teal/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="container mx-auto px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Left Content -->
+      <div class="space-y-8" data-aos="fade-up" data-aos-duration="1000">
+        <h1 class="text-5xl lg:text-6xl font-bold text-blue-dark space-y-2">
+          <span class="block">Hey There,</span>
+          <span class="block">I'm <span class="text-teal">Habdil</span></span>
+        </h1>
+
+        <p class="text-salmon hover:text-salmon/80 transition-colors">
+          <a href="mailto:habdiliqrawardana@gmail.com" 
+             class="group inline-flex items-center gap-2">
+            habdiliqrawardana@gmail.com
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" 
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </a>
+        </p>
+
+        <div class="flex items-center gap-4 text-blue-medium" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 overflow-hidden">
+            <img 
+              src={students} 
+              alt="Student Icon" 
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <p class="font-medium">Informatics</p>
+            <p class="text-sm">Students</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-right text-blue-dark/80 max-w-sm ml-auto italic">
+          "Crafting Digital Solutions Through Code and Innovation"
+        </p>
+      </div>
+
+      <!-- Right Content - Profile Image & Floating Icons -->
+      <div class="relative" data-aos="fade-left" data-aos-duration="1000">
+        <!-- Main profile image -->
+        <div class="relative z-10">
+          <img 
+            src={profileImgUrl} 
+            alt="Habdil Profile" 
+            class="w-full max-w-xl mx-auto filter drop-shadow-xl rounded-2xl"
+          />
+        </div>
+
+        <!-- Floating tech icons -->
+        {techIcons.map((icon) => (
+          <div class={`absolute w-12 h-12 ${icon.class}`}>
+            <img 
+              src={icon.src} 
+              alt={icon.alt}
+              class="w-full h-full object-contain hover:scale-110 transition-transform cursor-pointer"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Floating animations */
+  @keyframes float-1 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-10px, -10px) rotate(5deg); }
+  }
+  @keyframes float-2 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(10px, -5px) rotate(-5deg); }
+  }
+  @keyframes float-3 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-5px, 10px) rotate(3deg); }
+  }
+  @keyframes float-4 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(8px, 8px) rotate(-3deg); }
+  }
+  @keyframes float-5 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-8px, 5px) rotate(5deg); }
+  }
+
+  .animate-float-1 { animation: float-1 6s ease-in-out infinite; }
+  .animate-float-2 { animation: float-2 7s ease-in-out infinite; }
+  .animate-float-3 { animation: float-3 8s ease-in-out infinite; }
+  .animate-float-4 { animation: float-4 7s ease-in-out infinite; }
+  .animate-float-5 { animation: float-5 6s ease-in-out infinite; }
+</style>
