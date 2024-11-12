@@ -23,7 +23,20 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link 
+      rel="preconnect" 
+      href="https://fonts.googleapis.com"
+      crossorigin
+    />
+    <link 
+      rel="preconnect" 
+      href="https://fonts.gstatic.com" 
+      crossorigin
+    />
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+      rel="stylesheet"
+    />
     
     <!-- AOS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
@@ -31,23 +44,49 @@ const {
     <title>{title}</title>
     <ViewTransitions />
   </head>
-  <body class="bg-gray-white min-h-screen flex flex-col font-inter antialiased">
+  <body class="bg-gray-white min-h-screen flex flex-col font-inter antialiased overflow-x-hidden">
     <Navbar />
     <main class="flex-grow">
       <slot />
     </main>
     <Footer />
 
-    <!-- Initialize AOS -->
-    <script is:inline src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script is:inline>
-      AOS.init({
-        duration: 800,
-        once: true,
-        offset: 100,
-        delay: 100,
+      // Initialize AOS
+      window.addEventListener('load', initAOS);
+      document.addEventListener('astro:page-load', initAOS);
+      document.addEventListener('astro:after-swap', initAOS);
+
+      function initAOS() {
+        if (typeof AOS !== 'undefined') {
+          AOS.init({
+            duration: 800,
+            offset: window.innerWidth < 768 ? 0 : 100,
+            once: true,
+            mirror: false,
+            disable: 'mobile'
+          });
+        }
+      }
+
+      // Reset scroll position on navigation
+      document.addEventListener('astro:before-swap', () => {
+        window.scrollTo(0, 0);
+      });
+
+      // Prevent transition issues
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        document.body.classList.add('resize-animation-stopper');
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          document.body.classList.remove('resize-animation-stopper');
+        }, 400);
       });
     </script>
+
+    <!-- Load AOS -->
+    <script is:inline src="https://unpkg.com/aos@next/dist/aos.js"></script>
   </body>
 </html>
 
@@ -58,27 +97,145 @@ const {
 
   html {
     font-family: var(--font-inter);
-  }
-
-  /* Smooth scrolling */
-  html {
     scroll-behavior: smooth;
   }
 
-  /* Hide scrollbar for Chrome, Safari and Opera */
+  /* Disable animations when resizing */
+  .resize-animation-stopper * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Basic animations */
+  @media (min-width: 768px) {
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .slide-up {
+      animation: slideUp 0.5s ease-out forwards;
+    }
+
+    .slide-down {
+      animation: slideDown 0.5s ease-out forwards;
+    }
+  }
+
+  /* Animation keyframes */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Animation utilities */
+  .animate-once {
+    animation-iteration-count: 1;
+  }
+
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  /* Hide scrollbar */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
-  /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
-  /* Custom selection color */
+  /* Selection color */
   ::selection {
     background-color: #38766B;
     color: white;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 767px) {
+    /* Disable AOS animations on mobile */
+    [data-aos] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+
+    /* Better touch handling */
+    * {
+      touch-action: manipulation;
+    }
+
+    /* Smoother scrolling */
+    html, body {
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent unwanted zoom */
+    input, select, textarea {
+      font-size: 16px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Fix mobile height */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* Performance class */
+  .hardware-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Fix iOS 100vh issue */
+  @supports (-webkit-touch-callout: none) {
+    .min-h-screen {
+      min-height: -webkit-fill-available;
+    }
   }
 </style>

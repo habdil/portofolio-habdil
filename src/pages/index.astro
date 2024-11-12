@@ -8,105 +8,137 @@ import Works from '../components/sections/Works.astro';
 
 <Layout title="Habdil - Personal Portfolio">
   <main class="relative">
-    <!-- Preload essential sections -->
-    <div class="min-h-screen">
+    <!-- Priority Sections -->
+    <div class="priority-content">
       <Hero />
-    </div>
-    
-    <!-- Lazy load other sections -->
-    <div class="relative">
       <Experience />
       <Journey />
+    </div>
+    
+    <!-- Deferred Loading Section -->
+    <div 
+      class="deferred-content" 
+      data-loading="true"
+      aria-busy="true"
+    >
       <Works />
     </div>
   </main>
 </Layout>
 
 <script>
-// Function to check if element is in viewport
-function isInViewport(element: Element) {
-  const rect = element.getBoundingClientRect();
-  return (
-    rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.bottom >= 0
-  );
-}
+// Loading state management
+let isLoading = true;
 
-// Initialize sections visibility
-document.addEventListener('astro:page-load', () => {
-  const sections = document.querySelectorAll('section');
-  let observer = new IntersectionObserver((entries) => {
+// Function to initialize sections
+function initializeSections() {
+  const deferredContent = document.querySelector('.deferred-content');
+  if (!deferredContent) return;
+
+  // Create and show loading indicator if needed
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.className = 'loading-indicator';
+  deferredContent.appendChild(loadingIndicator);
+
+  // Use Intersection Observer for lazy loading
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('section-visible');
-        observer.unobserve(entry.target);
+        loadDeferredContent();
+        observer.disconnect();
       }
     });
   }, {
-    threshold: 0.1,
-    rootMargin: '50px'
+    rootMargin: '50px', // Start loading slightly before section is visible
+    threshold: 0.1
   });
 
-  sections.forEach(section => {
-    if (!isInViewport(section)) {
-      observer.observe(section);
-    } else {
-      section.classList.add('section-visible');
+  observer.observe(deferredContent);
+}
+
+// Function to load deferred content
+async function loadDeferredContent() {
+  const deferredContent = document.querySelector('.deferred-content');
+  if (!deferredContent || !isLoading) return;
+
+  try {
+    // Remove loading state
+    deferredContent.removeAttribute('data-loading');
+    deferredContent.setAttribute('aria-busy', 'false');
+    isLoading = false;
+
+    // Remove loading indicator if exists
+    const loadingIndicator = deferredContent.querySelector('.loading-indicator');
+    if (loadingIndicator) {
+      loadingIndicator.remove();
     }
-  });
-});
 
-// Handle view transitions
-document.addEventListener('astro:after-swap', () => {
-  const sections = document.querySelectorAll('section');
-  sections.forEach(section => {
-    if (isInViewport(section)) {
-      section.classList.add('section-visible');
-    }
-  });
-});
-
-// Optimize scroll performance
-let scrollTimeout: number;
-window.addEventListener('scroll', () => {
-  if (scrollTimeout) {
-    window.cancelAnimationFrame(scrollTimeout);
+    // Initialize any scripts or functionality needed for Works section
+    initializeWorksSection();
+  } catch (error) {
+    console.error('Error loading deferred content:', error);
+    // Handle error state if needed
   }
-  
-  scrollTimeout = window.requestAnimationFrame(() => {
-    const sections = document.querySelectorAll('section:not(.section-visible)');
-    sections.forEach(section => {
-      if (isInViewport(section)) {
-        section.classList.add('section-visible');
-      }
-    });
-  });
-}, { passive: true });
+}
+
+// Initialize Works section specific functionality
+function initializeWorksSection() {
+  // Add any Works-specific initialization here
+  // For example, image lazy loading, filters, etc.
+}
+
+// Handle initial page load
+document.addEventListener('DOMContentLoaded', initializeSections);
+
+// Handle Astro view transitions
+document.addEventListener('astro:page-load', () => {
+  isLoading = true;
+  initializeSections();
+});
+
+document.addEventListener('astro:after-swap', () => {
+  isLoading = true;
+  initializeSections();
+});
 </script>
 
-<style is:global>
-  section {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-  }
+<style>
+/* Loading indicator styles */
+.deferred-content[data-loading="true"] {
+  min-height: 200px;
+  position: relative;
+}
 
-  section.section-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: none;
+}
 
-  /* Ensure first section (Hero) is always visible */
-  section:first-of-type {
-    opacity: 1;
-    transform: none;
-  }
+.deferred-content[data-loading="true"] .loading-indicator {
+  display: block;
+}
 
-  /* Optimize transitions */
-  @media (prefers-reduced-motion: reduce) {
-    section {
-      transition: opacity 0.1s ease-out;
-      transform: none;
-    }
-  }
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Smooth content transitions */
+.priority-content,
+.deferred-content {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.deferred-content[data-loading="true"] {
+  opacity: 0.6;
+}
 </style>
