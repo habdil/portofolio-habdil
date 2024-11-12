@@ -12,11 +12,11 @@ const students = '/assets/icons/students.svg';
 
 // Update tech icons data
 const techIcons = [
- { src: jsIconUrl, alt: "JavaScript", class: "top-10 right-40 animate-float-1" },      // Lebih ke atas
- { src: pythonIconUrl, alt: "Python", class: "top-48 right-16 animate-float-2" },      // Lebih ke kanan
- { src: uiuxIconUrl, alt: "UI/UX", class: "top-4 right-80 animate-float-3" },          // Lebih ke kiri atas
- { src: javaIconUrl, alt: "Java", class: "top-60 right-90 animate-float-4" },          // Lebih ke bawah
- { src: securityIconUrl, alt: "Security", class: "top-32 right-90 animate-float-5" },    // Lebih ke kanan tengah
+ { src: jsIconUrl, alt: "JavaScript", class: "top-20 right-[20%] animate-float-1" },    // Kiri atas
+ { src: pythonIconUrl, alt: "Python", class: "top-40 right-[10%] animate-float-2" },    // Kanan
+ { src: uiuxIconUrl, alt: "UI/UX", class: "top-10 right-[40%] animate-float-3" },       // Tengah atas
+ { src: javaIconUrl, alt: "Java", class: "top-20 right-[80%] animate-float-4" },     // Kanan bawah
+ { src: securityIconUrl, alt: "Security", class: "top-60 right-[80%] animate-float-5" }, // Tengah bawah
 ];
 ---
 
@@ -68,20 +68,12 @@ const techIcons = [
         </p>
       </div>
 
+
       <!-- Right Content - Profile Image & Floating Icons -->
       <div class="relative" data-aos="fade-left" data-aos-duration="1000">
-        <!-- Main profile image -->
-        <div class="relative z-10">
-          <img 
-            src={profileImgUrl} 
-            alt="Habdil Profile" 
-            class="w-full max-w-xl mx-auto filter drop-shadow-xl rounded-2xl"
-          />
-        </div>
-
-        <!-- Floating tech icons -->
+        <!-- Floating tech icons - Pindah ke atas profile image -->
         {techIcons.map((icon) => (
-          <div class={`absolute w-12 h-12 ${icon.class}`}>
+          <div class={`absolute w-12 h-12 ${icon.class} z-20`}>
             <img 
               src={icon.src} 
               alt={icon.alt}
@@ -89,6 +81,16 @@ const techIcons = [
             />
           </div>
         ))}
+
+          <!-- Main profile image -->
+          <div class="relative z-10">
+            <img 
+              src={profileImgUrl} 
+              alt="Habdil Profile" 
+              class="w-full max-w-xl mx-auto filter drop-shadow-xl rounded-2xl"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>

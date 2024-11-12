@@ -1,0 +1,211 @@
+---
+const experiences = [
+  {
+    category: "Academic",
+    role: "Laboratory Assistant",
+    organization: "IT Centrum UII",
+    period: "2023 - Present",
+    location: "Yogyakarta, Indonesia",
+    description: "Teaching assistant for Programming Logic, guiding students in developing strong programming foundations through practical lab sessions and problem-solving exercises.",
+    highlights: [
+      "Conduct lab sessions for Programming Logic course",
+      "Create teaching materials and exercises",
+      "Evaluate student performance",
+      "Mentor students in programming concepts"
+    ]
+  },
+  {
+    category: "Academic",
+    role: "Teaching Assistant",
+    organization: "Universitas Islam Indonesia",
+    period: "2023 - Present",
+    location: "Yogyakarta, Indonesia",
+    description: "Supporting students in mastering Informatics Fundamentals through comprehensive guidance and mentoring.",
+    highlights: [
+      "Create and review course materials",
+      "Facilitate discussion sessions",
+      "Assist in grading assignments",
+      "Provide one-on-one tutoring"
+    ]
+  },
+  {
+    category: "Competition",
+    role: "Team Leader",
+    organization: "CrimeInsight Prediction",
+    period: "2024",
+    location: "Bogor, Indonesia",
+    description: "Led the development of a machine learning-based crime prediction system for DKI Jakarta at Preliminary Data Science Competition by Kominfo.",
+    highlights: [
+      "Implemented Random Forest Regressor for predictions",
+      "Developed interactive crime hotspot mapping",
+      "Integrated dynamic data visualization",
+      "Created comprehensive regional analysis"
+    ]
+  },
+  {
+    category: "Research",
+    role: "Research Team",
+    organization: "Airnologi 2.0",
+    period: "2023",
+    location: "Surabaya, Indonesia",
+    description: "Second Runner-up for innovative research on air quality improvement through scrubber system implementation.",
+    highlights: [
+      "Authored research paper on air pollution mitigation",
+      "Analyzed steam power plant systems",
+      "Proposed technological solutions",
+      "Presented findings to expert panel"
+    ]
+  }
+];
+
+const categories = ["All", "Academic", "Competition", "Research"];
+---
+
+<section class="py-20 bg-gray-50" id="experience">
+    <div class="container mx-auto px-6">
+      <!-- Header -->
+      <div class="text-center mb-20">
+        <h1 class="text-4xl md:text-5xl font-bold text-blue-dark mb-4">
+          Professional Experience
+        </h1>
+        <p class="text-blue-medium/80 text-lg max-w-2xl mx-auto">
+          Journey through my academic and professional experiences, where each role has contributed to my growth in technology and leadership.
+        </p>
+      </div>
+   
+      <!-- Experience Timeline -->
+      <div class="max-w-5xl mx-auto">
+        {experiences.map((exp, index) => (
+          <div class="mb-24 last:mb-0"> {/* Tambahkan margin bottom yang besar */}
+            <div 
+              class="group relative bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300"
+              data-aos="fade-up"
+              data-aos-delay={index * 100}
+              data-category={exp.category}
+            >
+              <!-- Category Badge -->
+              <div class="absolute -top-4 left-8">
+                <span class="px-6 py-2 bg-gradient-to-r from-blue-dark to-teal text-white rounded-full text-sm font-medium shadow-md">
+                  {exp.category}
+                </span>
+              </div>
+   
+              <div class="p-8 md:p-12">
+                <div class="grid md:grid-cols-12 gap-8">
+                  <!-- Left Column - Role Info -->
+                  <div class="md:col-span-4">
+                    <h3 class="text-2xl font-bold text-blue-dark mb-3 hover:text-teal transition-colors duration-300">
+                      {exp.role}
+                    </h3>
+                    <div class="space-y-3 mb-6">
+                      <p class="text-lg text-teal font-medium">
+                        {exp.organization}
+                      </p>
+                      <p class="text-blue-medium/70 flex items-center gap-2 group-hover:text-teal/70 transition-colors duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        {exp.period}
+                      </p>
+                      <p class="text-blue-medium/70 flex items-center gap-2 group-hover:text-teal/70 transition-colors duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {exp.location}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="md:col-span-8">
+                    <p class="text-blue-medium/90 text-lg mb-8 leading-relaxed">
+                      {exp.description}
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                      {exp.highlights.map(highlight => (
+                        <div class="flex items-start gap-3 group/highlight hover:transform hover:translate-x-2 transition-all duration-300">
+                          <div class="mt-2">
+                            <div class="w-2 h-2 rounded-full bg-teal group-hover/highlight:scale-150 transition-transform"></div>
+                          </div>
+                          <p class="text-blue-medium/80 leading-relaxed group-hover/highlight:text-blue-dark transition-colors duration-300">
+                            {highlight}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+   
+              <!-- Decorative Elements -->
+              <div class="absolute -right-3 -bottom-3 w-32 h-32 bg-gradient-to-br from-teal/10 to-blue-dark/10 rounded-3xl -z-10 group-hover:scale-110 transition-transform duration-300"></div>
+              <div class="absolute -left-3 -top-3 w-24 h-24 bg-gradient-to-br from-blue-dark/10 to-teal/10 rounded-3xl -z-10 group-hover:scale-110 transition-transform duration-300"></div>
+            </div>
+            
+            {/* Connector Line (except for last item) */}
+            {index !== experiences.length - 1 && (
+              <div class="h-16 w-0.5 bg-gradient-to-b from-teal/20 to-blue-dark/20 mx-auto mt-8"></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+   </section>
+
+<style>
+  .fade-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+</style>
+
+<script>
+  let currentCategory = 'All';
+  
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-category]');
+  const experienceCards = document.querySelectorAll<HTMLDivElement>('#experienceList > div');
+
+  function filterExperiences(category: string): void {
+    currentCategory = category;
+    
+    experienceCards.forEach((card: HTMLDivElement) => {
+      const cardCategory = card.getAttribute('data-category');
+      
+      if (category === 'All' || cardCategory === category) {
+        card.style.display = 'block';
+        card.classList.add('fade-enter');
+        requestAnimationFrame(() => {
+          card.classList.remove('fade-enter');
+          card.classList.add('fade-enter-active');
+        });
+        setTimeout(() => {
+          card.classList.remove('fade-enter-active');
+        }, 500);
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function updateActiveButton(clickedButton: HTMLButtonElement): void {
+    filterButtons.forEach(button => {
+      button.setAttribute('data-active', 'false');
+    });
+    clickedButton.setAttribute('data-active', 'true');
+  }
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const category = button.getAttribute('data-category');
+      if (category && category !== currentCategory) {
+        updateActiveButton(button);
+        filterExperiences(category);
+      }
+    });
+  });
+</script>

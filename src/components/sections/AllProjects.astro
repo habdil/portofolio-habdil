@@ -1,0 +1,224 @@
+---
+const allProjects = [
+ {
+   title: "Mobile App Design",
+   subtitle: "EduNovel: Read a Novel, you can donate!",
+   image: "/assets/images/banner/banner-1.png",
+   category: "Mobile App",
+   year: "2023",
+   href: "https://www.figma.com/proto/PpjczXw4I7NzNKocAA1Oaf/EduNovel?page-id=0%3A1&type=design&node-id=1-154&viewport=-363%2C-4147%2C0.47&t=njsbVZbORD7Oi5kE-1&scaling=scale-down&starting-point-node-id=401%3A162&show-proto-sidebar=1"
+ },
+ {
+   title: "Web Application", 
+   subtitle: "RakyatAdu: Care and Swift Service",
+   image: "/assets/images/banner/banner-2.png", 
+   category: "Desktop App",
+   year: "2024",
+   href: "https://github.com/habdil/rakyatAdu-bitminds-sistem-pelaporan-masyarakat/tree/master"
+ },
+ {
+   title: "Machine Learning",
+   subtitle: "CrimeInsight Prediction",
+   image: "/assets/images/banner/banner-3.png",
+   category: "Data Science", 
+   year: "2024",
+   href: "https://github.com/habdil/crimeInsight-prediction"
+ },
+ {
+   title: "Research Project",
+   subtitle: "Air Quality Innovation",
+   image: "/assets/images/banner/banner-4.png",
+   category: "Research",
+   year: "2023",
+   href: "https://bit.ly/PaperINFORVATION"
+ }
+];
+
+const categories = ["All", "Mobile App", "Desktop App", "Data Science", "Research"];
+---
+
+<section class="py-20" id="projects">
+ <div class="container mx-auto px-6">
+   <!-- Header -->
+   <div class="text-center mb-16">
+     <h1 class="text-4xl md:text-5xl font-bold text-blue-dark mb-4">
+       My Projects
+     </h1>
+     <p class="text-blue-medium/80 text-lg max-w-2xl mx-auto">
+       Explore my portfolio of works across various domains, from mobile applications to research projects
+     </p>
+   </div>
+
+   <!-- Category Filter -->
+   <div class="flex flex-wrap justify-center gap-4 mb-12">
+     {categories.map(category => (
+       <button 
+         class="relative px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300
+                before:absolute before:inset-0 before:rounded-full before:transition-all before:duration-300
+                data-[active=true]:before:bg-blue-dark data-[active=true]:text-white
+                data-[active=false]:before:bg-gray-100 data-[active=false]:text-blue-medium
+                hover:before:bg-blue-dark hover:text-white overflow-hidden
+                group"
+         data-category={category}
+         data-active={category === "All"}
+       >
+         <span class="relative z-10">{category}</span>
+         <span class="absolute inset-0 bg-gradient-to-r from-blue-dark to-teal opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></span>
+       </button>
+     ))}
+   </div>
+
+   <!-- Projects Grid -->
+   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projectsGrid">
+     {allProjects.map((project, index) => (
+       <div 
+         class="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1"
+         data-aos="fade-up"
+         data-aos-delay={index * 100}
+         data-category={project.category}
+       >
+         <!-- Project Image -->
+         <div class="aspect-square overflow-hidden">
+           <img 
+             src={project.image}
+             alt={project.title}
+             class="w-full h-full object-cover transform transition-all duration-500 group-hover:scale-105"
+           />
+         </div>
+
+         <!-- Project Info -->
+         <div class="p-8">
+           <div class="flex justify-between items-start mb-4">
+             <span class="px-4 py-1 bg-gray-100 rounded-full text-sm text-blue-medium">
+               {project.category}
+             </span>
+             <span class="text-sm text-blue-medium/60">
+               {project.year}
+             </span>
+           </div>
+
+           <h3 class="text-xl font-bold text-blue-dark mb-2">
+             {project.title}
+           </h3>
+           <p class="text-blue-medium/80 mb-6">
+             {project.subtitle}
+           </p>
+
+           <a 
+             href={project.href}
+             target="_blank"
+             rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 text-blue-dark font-medium hover:gap-4 transition-all group"
+           >
+             View Project
+             <svg 
+               xmlns="http://www.w3.org/2000/svg" 
+               class="w-5 h-5 transform group-hover:translate-x-2 transition-transform" 
+               fill="none" 
+               viewBox="0 0 24 24" 
+               stroke="currentColor"
+             >
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+             </svg>
+           </a>
+         </div>
+       </div>
+     ))}
+   </div>
+ </div>
+</section>
+
+<style>
+ .fade-enter {
+   opacity: 0;
+   transform: translateY(20px);
+ }
+ 
+ .fade-enter-active {
+   opacity: 1;
+   transform: translateY(0);
+   transition: opacity 500ms ease-out, transform 500ms ease-out;
+ }
+ 
+ .fade-exit {
+   opacity: 1;
+   transform: translateY(0);
+ }
+ 
+ .fade-exit-active {
+   opacity: 0;
+   transform: translateY(20px);
+   transition: opacity 500ms ease-out, transform 500ms ease-out;
+ }
+</style>
+
+<script>
+ let currentCategory = 'All';
+ 
+ // Type definitions
+ const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-category]');
+ const projectCards = document.querySelectorAll<HTMLDivElement>('#projectsGrid > div');
+ const projectsGrid = document.getElementById('projectsGrid');
+
+ function filterProjects(category: string): void {
+   if (!projectsGrid) return;
+   
+   currentCategory = category;
+   
+   projectCards.forEach((card: HTMLDivElement) => {
+     const cardCategory = card.getAttribute('data-category');
+     
+     if (category === 'All' || cardCategory === category) {
+       card.style.display = 'block';
+       card.classList.add('fade-enter');
+       requestAnimationFrame(() => {
+         card.classList.remove('fade-enter');
+         card.classList.add('fade-enter-active');
+       });
+       setTimeout(() => {
+         card.classList.remove('fade-enter-active');
+       }, 500);
+     } else {
+       card.classList.add('fade-exit');
+       setTimeout(() => {
+         card.classList.add('fade-exit-active');
+         setTimeout(() => {
+           card.style.display = 'none';
+           card.classList.remove('fade-exit', 'fade-exit-active');
+         }, 500);
+       }, 0);
+     }
+   });
+ }
+
+ function updateActiveButton(clickedButton: HTMLButtonElement): void {
+   filterButtons.forEach(button => {
+     button.setAttribute('data-active', 'false');
+   });
+   clickedButton.setAttribute('data-active', 'true');
+ }
+
+ // Event Listeners
+ filterButtons.forEach(button => {
+   button.addEventListener('click', () => {
+     const category = button.getAttribute('data-category');
+     if (category && category !== currentCategory) {
+       updateActiveButton(button);
+       filterProjects(category);
+     }
+   });
+ });
+
+ // Hover effects
+ if (projectsGrid) {
+   projectCards.forEach((card: HTMLDivElement) => {
+     card.addEventListener('mouseenter', () => {
+       card.style.transform = 'translateY(-8px)';
+     });
+     
+     card.addEventListener('mouseleave', () => {
+       card.style.transform = '';
+     });
+   });
+ }
+</script>
