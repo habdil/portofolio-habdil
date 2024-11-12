@@ -50,9 +50,9 @@ const currentPath = Astro.url.pathname;
         aria-expanded="false"
       >
         <div class="relative w-6 h-6">
-          <span class="absolute top-0 left-0 w-6 h-0.5 bg-blue-dark transition-transform duration-300"></span>
-          <span class="absolute top-[10px] left-0 w-6 h-0.5 bg-blue-dark transition-opacity duration-300"></span>
-          <span class="absolute top-[20px] left-0 w-6 h-0.5 bg-blue-dark transition-transform duration-300"></span>
+          <span class="absolute top-0 left-0 w-6 h-0.5 bg-blue-dark transform transition-all duration-300 rotate-0"></span>
+          <span class="absolute top-[10px] left-0 w-6 h-0.5 bg-blue-dark transform transition-all duration-300"></span>
+          <span class="absolute top-[20px] left-0 w-6 h-0.5 bg-blue-dark transform transition-all duration-300 rotate-0"></span>
         </div>
       </button>
     </div>
@@ -60,10 +60,10 @@ const currentPath = Astro.url.pathname;
     <!-- Mobile Navigation Menu -->
     <div 
       id="mobileMenu"
-      class="fixed inset-0 bg-white/95 backdrop-blur-sm transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-40"
+      class="fixed inset-0 bg-white/95 backdrop-blur-sm transform translate-x-full transition-transform duration-500 ease-in-out md:hidden z-40 pointer-events-none"
       aria-hidden="true"
     >
-      <div class="flex flex-col h-full justify-center items-center p-6">
+      <div class="flex flex-col h-full justify-center items-center p-6 pointer-events-auto">
         <div class="flex flex-col space-y-6 text-center">
           {navLinks.map(link => (
             <a 
@@ -85,60 +85,83 @@ const currentPath = Astro.url.pathname;
   </nav>
 </header>
 
-<script>
-// State management for mobile menu
-let isMenuOpen = false;
+<style>
+.menu-open span:first-child {
+  top: 10px !important;
+  transform: rotate(45deg) !important;
+}
 
-// Initialize mobile menu functionality
-function initializeMobileMenu() {
+.menu-open span:nth-child(2) {
+  opacity: 0 !important;
+  transform: translateX(100%) !important;
+}
+
+.menu-open span:last-child {
+  top: 10px !important;
+  transform: rotate(-45deg) !important;
+}
+
+.mobile-menu-show {
+  transform: translateX(0) !important;
+  pointer-events: auto !important;
+}
+
+/* Prevent scrolling when menu is open */
+.menu-open-body {
+  overflow: hidden !important;
+}
+</style>
+
+<script>
+function setupMobileMenu() {
   const menuButton = document.getElementById('menuButton');
   const mobileMenu = document.getElementById('mobileMenu');
-  
-  if (!menuButton || !mobileMenu) return;
-  
-  // Reset state
-  isMenuOpen = false;
-  menuButton.classList.remove('menu-open');
-  mobileMenu.classList.remove('mobile-menu-show');
-  document.body.classList.remove('menu-open-body');
-  
+  const navLinks = document.querySelectorAll('[data-nav-link]');
+  let isMenuOpen = false;
+
   function toggleMenu() {
-    if (!menuButton || !mobileMenu) return;
-    
     isMenuOpen = !isMenuOpen;
-    menuButton.classList.toggle('menu-open');
-    mobileMenu.classList.toggle('mobile-menu-show');
+    menuButton?.classList.toggle('menu-open');
+    mobileMenu?.classList.toggle('mobile-menu-show');
     document.body.classList.toggle('menu-open-body');
-    menuButton.setAttribute('aria-expanded', String(isMenuOpen));
-    mobileMenu.setAttribute('aria-hidden', String(!isMenuOpen));
+    menuButton?.setAttribute('aria-expanded', isMenuOpen.toString());
+    mobileMenu?.setAttribute('aria-hidden', (!isMenuOpen).toString());
   }
 
-  // Menu button click handler
-  menuButton.addEventListener('click', (e) => {
+  // Remove any existing event listeners
+  const newMenuButton = menuButton?.cloneNode(true);
+  if (menuButton && newMenuButton) {
+    menuButton.parentNode?.replaceChild(newMenuButton, menuButton);
+  }
+
+  // Add new event listeners
+  newMenuButton?.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleMenu();
   });
 
-  // Close menu on navigation link click
-  const navLinks = mobileMenu.querySelectorAll('[data-nav-link]');
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (isMenuOpen) toggleMenu();
-    });
-  });
-
-  // Close menu on outside click
-  document.addEventListener('click', (e) => {
-    if (isMenuOpen && !mobileMenu.contains(e.target as Node) && e.target !== menuButton) {
-      toggleMenu();
-    }
-  });
-
-  // Close menu on escape key
+  // Close menu when pressing Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isMenuOpen) {
       toggleMenu();
     }
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (isMenuOpen && !mobileMenu?.contains(target) && target !== newMenuButton) {
+      toggleMenu();
+    }
+  });
+
+  // Handle nav links
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMenuOpen) {
+        toggleMenu();
+      }
+    });
   });
 
   // Handle resize
@@ -147,47 +170,27 @@ function initializeMobileMenu() {
       toggleMenu();
     }
   });
+
+  // Handle scroll
+  let prevScroll = window.pageYOffset;
+  const header = document.querySelector('header');
+  
+  window.addEventListener('scroll', () => {
+    if (isMenuOpen) return;
+
+    const currentScroll = window.pageYOffset;
+    if (currentScroll > prevScroll && currentScroll > 100) {
+      header?.classList.add('-translate-y-full');
+    } else {
+      header?.classList.remove('-translate-y-full');
+    }
+    prevScroll = currentScroll;
+  });
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', initializeMobileMenu);
+// Setup on initial load
+setupMobileMenu();
 
-// Re-initialize after Astro view transitions
-document.addEventListener('astro:page-load', initializeMobileMenu);
-document.addEventListener('astro:after-swap', initializeMobileMenu);
-
-// Handle cleanup between page transitions
-document.addEventListener('astro:before-swap', () => {
-  document.body.classList.remove('menu-open-body');
-});
+// Re-setup after each navigation
+document.addEventListener('astro:after-swap', setupMobileMenu);
 </script>
-
-<style>
-.menu-open span:first-child {
-  transform: translateY(10px) rotate(45deg);
-}
-
-.menu-open span:nth-child(2) {
-  opacity: 0;
-}
-
-.menu-open span:last-child {
-  transform: translateY(-10px) rotate(-45deg);
-}
-
-.mobile-menu-show {
-  transform: translateX(0) !important;
-}
-
-.menu-open-body {
-  overflow: hidden;
-  touch-action: none;
-}
-
-@media (min-width: 768px) {
-  .menu-open-body {
-    overflow: auto;
-    touch-action: auto;
-  }
-}
-</style>
