@@ -10,7 +10,7 @@ Sebuah website portfolio personal yang modern dan elegan, dibangun dengan teknol
 
 ## 🌟 Preview
 
-Portfolio ini dapat diakses di: [https://portfolio-habdil.vercel.app](https://portfolio-habdil.vercel.app)
+Portfolio ini dapat diakses di: [Portfolio-Habdil-Iqrawardana](https://portofolio-habdil.vercel.app)
 
 ## 💻 Tech Stack
 
