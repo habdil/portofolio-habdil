@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="public/favicon.svg" alt="FutureCrafted Logo" width="200"/>
+</div>
+
 # 🚀 FutureCrafted Portfolio
 
 ![Portfolio Banner](public/assets/images/image.png)
